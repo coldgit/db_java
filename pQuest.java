@@ -1,5 +1,7 @@
+
 // to compile -- >javac -cp "mysql-connector-java-5.1.39\mysql-connector-java-5.1.39-bin.jar"; pQuest.java
 //to run      -->java -cp "mysql-connector-java-5.1.39\mysql-connector-java-5.1.39-bin.jar"; pQuest
+
 import java.util.*;
 import java.sql.*;
 import java.awt.*;
@@ -9,6 +11,7 @@ import javax.swing.*;
 
 class pQuest extends JFrame
 {
+<<<<<<< HEAD
 	public static String[] dsn = {
 								"jdbc:mysql://localhost/db_java",
 								"root",
