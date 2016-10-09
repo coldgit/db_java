@@ -5,18 +5,18 @@
 import java.util.*;
 import java.sql.*;
 import java.awt.*;
-import java.awt.Event.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 
 class pQuest extends JFrame
 {
-<<<<<<< HEAD
+
 	public static String[] dsn = {
 								"jdbc:mysql://localhost/db_java",
 								"root",
 								""};
-	private static JPanel[] panels = new JPanel[10]; 
+
 	public pQuest(JPanel panel)
 	{
 		Container cp = this.getContentPane();
@@ -24,7 +24,7 @@ class pQuest extends JFrame
 		cp.add(panel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Exit the program when the close_window button clicked
-		setTitle("......"); // "super" JFrame sets title
+		setTitle("Questioner!"); // "super" JFrame sets title
 		setSize(300, 150); // "super" JFrame sets initial size (or pack())
 		setVisible(true); // "super" JFrame shows
 
@@ -39,8 +39,9 @@ class pQuest extends JFrame
 			Class.forName("com.mysql.jdbc.Driver");
 			con  = DriverManager.getConnection(dsn[0],dsn[1],dsn[2]);
 			stm = con.createStatement();
-			//stm.executeQuery(x);
-			System.out.println("connected!");
+			ResultSet rs = stm.executeQuery(x);
+
+			System.out.println("connected!",rs);
 		}catch(Exception e)
 		{
 			System.out.println(e);
@@ -51,13 +52,7 @@ class pQuest extends JFrame
 
 	public static void main(String[] args)
 	{
-		for(int x = 0 ; x < 10; x++)
-		{
-			String y = "hello";
-		new pQuest(panels[x].add(new JButton(y)));
-		}
-		// InetAddress x =  InetAddress.getLocalHost();
-		 System.out.println("dex");//dsn[0]);
+		new pQuest(new JPanel(new GridLayout(12,1)));
 	}
 
 }
