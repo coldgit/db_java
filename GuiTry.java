@@ -10,7 +10,7 @@ class GuiTry extends JFrame{
 								"jdbc:mysql://localhost/db_java",
 								"root",
 								""};
-
+	private static JFrame content = new JFrame();
 	public static int counter(String sql)
 	{
 		ResultSetMetaData number = null;  
@@ -40,19 +40,18 @@ class GuiTry extends JFrame{
 		return stm;
 	}
 
-	public static String updateQuery()
+	public static String updateQuery(String sql)
 	{
-		ResultSet rs = null;
 		try{
 			Statement stmt = Connection();
-			rs = stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql);
 
 		}catch(Exception e)
 		{
 			System.out.println(e);
 		}
-		String done = "true";
-		return done;
+	
+		return "Successfully";
 	}
 
 	public static ResultSet Query(String sql)
@@ -74,7 +73,6 @@ class GuiTry extends JFrame{
 	{
 		JLabel answer_l[] = new JLabel[3];
 			answer_l[0] = new JLabel("Question :");
-			answer_l[1] = new JLabel("Answer type :");
 			answer_l[2] = new JLabel("Description :");
 			
 		int number_of_questions = 0;
@@ -106,39 +104,10 @@ class GuiTry extends JFrame{
 		 	
       
    	    JComboBox quest = new JComboBox(questions); 
-   	    int number_of_answer_types = 0;
-			try{
-				String sql = "SELECT COUNT(answer_types.answer_type_id) AS number_of_questions FROM answer_types";
-					ResultSet x = Query(sql);  
-					while(x.next())
-					{
-						number_of_answer_types = x.getInt(1);
-					}
-			}catch(Exception e)
-				{
-					System.out.println(e);
-				}
-		 String answer_types[] = new String[number_of_answer_types];  
-		 int set_ans = 0;
-			try{
-				String sql = "SELECT answer_type_desc FROM answer_types";
-				ResultSet x = Query(sql);
-				while(x.next())
-				{
-					answer_types[set_ans] = x.getString("answer_type_desc");
-					set_ans+=1;
-				}
-			}catch(Exception e)
-			{
-				System.out.println(e);
-			}
-		 	
-      
-   	    JComboBox ans = new JComboBox(answer_types);  
 		JTextField answer_t[] = new JTextField[2];
 			answer_t[0] = new JTextField();
 
-		JButton submit_btn = new JButton("Add New Lesson");
+		JButton submit_btn = new JButton("Add Choices");
 			submit_btn.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent e) {
 		         String q = " ";
@@ -146,29 +115,22 @@ class GuiTry extends JFrame{
 		               q = (String)quest.getItemAt
 		                    (quest.getSelectedIndex());             
 		            }        
-		           String answer = " ";
-		         	if (ans.getSelectedIndex() != -1) {                     
-		               answer = (String)ans.getItemAt
-		                    (ans.getSelectedIndex());             
-		            }       
-		           System.out.println(q+"--"+answer+"--"+answer_t[0].getText());
+		                
+		           System.out.println(q+"--"+answer_t[0].getText());
 		         }          
 		      });
 
-		JPanel answer_data = new JPanel(new GridLayout(answer_l.length,answer_l.length));
-			answer_data.add(answer_l[0]);
-			answer_data.add(quest);
-			answer_data.add(answer_l[1]);
-			answer_data.add(ans);
-			answer_data.add(answer_l[2]);
-			answer_data.add(answer_t[0]);	
-		
+			
 		JPanel answer = new JPanel(new GridLayout(2,1));
-			answer.add(answer_data);
+			int x =100,y=100,w=120,h=30;
+			answer_l[0].setBounds(x,y,w,h);	quest.setBounds(x+200,y,w,h);
+			answer_l[2].setBounds(x,y+=70,w,h); answer_t[0].setBounds(x+200,y,w,h);
+			submit_btn.setBounds(x,y+=70,w,h);
+
+			answer.add(answer_l[0]);answer.add(quest);
+			answer.add(answer_l[2]);answer.add(answer_t[0]);	
 			answer.add(submit_btn);
-			answer.setLocation(150,150);
-			answer.setSize(400,100);
-			answer.setVisible(true);
+			answer.setLayout(null);
 
 		return answer;
 	}
@@ -216,7 +178,7 @@ class GuiTry extends JFrame{
 			question_t[0] = new JTextField();
 			question_t[1] = new JTextField();
 
-		JButton submit_btn = new JButton("Add New Lesson");
+		JButton submit_btn = new JButton("New Question");
 			submit_btn.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent e) {
 		         String subj = " ";
@@ -228,93 +190,100 @@ class GuiTry extends JFrame{
 		         }          
 		      });
 
-		JPanel question_data = new JPanel(new GridLayout(question_l.length,question_l.length));
-			question_data.add(question_l[0]);
-			question_data.add(lesson);
-			question_data.add(question_l[1]);
-			question_data.add(question_t[0]);	
-			question_data.add(question_l[2]);
-			question_data.add(question_t[1]);	
-		
-		JPanel question = new JPanel(new GridLayout(2,1));
-			question.add(question_data);
+		JPanel question = new JPanel();
+			int x = 150,y = 100,w = 100,h = 30;
+			question_l[0].setBounds(x,y,w,h);		lesson.setBounds(x+120,y,w+30,h);
+			question_l[1].setBounds(x,y+=70,w,h);	question_t[0].setBounds(x+120,y,w+30,h);
+			question_l[2].setBounds(x,y+=70,w,h);	question_t[1].setBounds(x+120,y,w+30,h);
+			submit_btn.setBounds(x,y+=70,w+30,h);
+
+			question.add(question_l[0]); question.add(lesson);
+			question.add(question_l[1]);question.add(question_t[0]);	
+			question.add(question_l[2]);question.add(question_t[1]);	
 			question.add(submit_btn);
-			question.setLocation(150,150);
-			question.setSize(400,100);
-			question.setVisible(true);
+			question.setLayout(null);
 
 		return question;
 	}
 
+	// public static Vector subjectV()
+	// {
+	// 	Vector subjects = new Vector();
+		
+	// 	try{
+	// 			String sql = "SELECT subject_desc FROM subjects";
+	// 			ResultSet x = Query(sql);
+	// 			while(x.next())
+	// 			{
+
+	// 				subjects.addElement(x.getString("subject_desc"));
+	// 				System.out.println(x.getString("subject_desc"));
+	// 			}
+	// 		}catch(Exception e)
+	// 		{
+	// 			System.out.println(e);
+	// 		}
+			
+	// 		System.out.println(x.elementAt(0));
+	// 		x.remove(0);
+	// 		System.out.println(x.size());
+	// }
 	public static JPanel lessons_form()
 	{
-		JLabel lessons_l[] = new JLabel[3];
-			lessons_l[0] = new JLabel("Subject Name:");
-			lessons_l[1] = new JLabel("Title :");
-			lessons_l[2] = new JLabel("Content :");
+	// 	JLabel lessons_l[] = new JLabel[3];
+	// 		lessons_l[0] = new JLabel("Subject Name:");
+	// 		lessons_l[1] = new JLabel("Title :");
+	// 		lessons_l[2] = new JLabel("Content :");
 			
-		int number_of_subjects = 0;
-		try{
-				String sql = "SELECT COUNT(subjects.subject_id) AS number_of_subjects FROM subjects";
-				ResultSet x = Query(sql);  
-				while(x.next())
-				{
-					number_of_subjects = x.getInt(1);
-				}
-				System.out.println(number_of_subjects);
-				}catch(Exception e)
-				{
-					System.out.println(e);
-				}
-		 String subjects[] = new String[number_of_subjects];  
-		 int set_subs = 0;
-			try{
-				String sql = "SELECT subject_desc FROM subjects";
-				ResultSet x = Query(sql);
-				while(x.next())
-				{
-
-					subjects[set_subs] = x.getString("subject_desc");
-					System.out.println(x.getString("subject_desc"));
-					set_subs+=1;
-				}
-				
-			}catch(Exception e)
-			{
-				System.out.println(e);
-			}
+	// 	int number_of_subjects = 0;
+	// 		try{
+	// 				String sql = "SELECT COUNT(subjects.subject_id) AS number_of_subjects FROM subjects";
+	// 				ResultSet x = Query(sql);  
+	// 				while(x.next())
+	// 				{
+	// 					number_of_subjects = x.getInt(1);
+	// 				}
+	// 				System.out.println(number_of_subjects);
+	// 			}catch(Exception e){
+	// 					System.out.println(e);
+	// 			}
+	// 	 String subjects[] = new String[number_of_subjects];  
+	// 	 int set_subs = 0;
 		 
-   	    JComboBox subject = new JComboBox(subjects);  
-		JTextField lessons_t[] = new JTextField[2];
-			lessons_t[0] = new JTextField();
-			lessons_t[1] = new JTextField();
+ //   	    JComboBox subject = new JComboBox(subjects);  
+	// 	JTextField lessons_t[] = new JTextField[2];
+	// 		lessons_t[0] = new JTextField();
+	// 		lessons_t[1] = new JTextField();
 
-		JButton submit_btn = new JButton("Add New Lesson");
-			submit_btn.addActionListener(new ActionListener() {
-		         public void actionPerformed(ActionEvent e) {
-		         String subj = " ";
-		         	if (subject.getSelectedIndex() != -1) {                     
-		               subj = (String)subject.getItemAt
-		                    (subject.getSelectedIndex());             
-		            }             
-		           System.out.println(subj+"--"+lessons_t[0].getText()+"--"+lessons_t[1].getText());
-		         }          
-		      });
-
-		JPanel lessons_data = new JPanel(new GridLayout(lessons_l.length,lessons_l.length));
-			lessons_data.add(lessons_l[0]);
-			lessons_data.add(subject);
-			lessons_data.add(lessons_l[1]);
-			lessons_data.add(lessons_t[0]);	
-			lessons_data.add(lessons_l[2]);
-			lessons_data.add(lessons_t[1]);	
+	// 	JButton submit_btn = new JButton("New Lesson");
+	// 		submit_btn.addActionListener(new ActionListener() {
+	// 	         public void actionPerformed(ActionEvent e) {
+	// 	         String subj = " ";
+	// 	         	if (subject.getSelectedIndex() != -1) {                     
+	// 	               subj = (String)subject.getItemAt
+	// 	                    (subject.getSelectedIndex());             
+	// 	            }             
+	// 	           System.out.println(subj+"--"+lessons_t[0].getText()+"--"+lessons_t[1].getText());
+	// 	         }          
+	// 	      });
+	
 		
-		JPanel lessons = new JPanel(new GridLayout(2,1));
-			lessons.add(lessons_data);
-			lessons.add(submit_btn);
-			lessons.setLocation(150,150);
-			lessons.setSize(400,100);
-			lessons.setVisible(true);
+		JPanel lessons = new JPanel();
+	// 		int x = 150,y = 100,w = 100,h = 30;
+	// 		lessons_l[0].setBounds(x,y,w,h);		subject.setBounds(x+120,y,w+30,h);
+	// 		lessons_l[1].setBounds(x,y+=70,w,h);	lessons_t[0].setBounds(x+120,y,w+30,h);
+	// 		lessons_l[2].setBounds(x,y+=70,w,h);	lessons_t[1].setBounds(x+120,y,w+30,h);
+	// 		submit_btn.setBounds(x,y+=70,w+30,h);
+
+	// 		lessons.add(lessons_l[0]);
+	// 		lessons.add(subject);
+	// 		lessons.add(lessons_l[1]);
+	// 		lessons.add(lessons_t[0]);	
+	// 		lessons.add(lessons_l[2]);
+	// 		lessons.add(lessons_t[1]);	
+	// 		lessons.add(submit_btn);
+			
+	// 		lessons.setLayout(null);
 
 		return lessons;
 	}
@@ -327,25 +296,29 @@ class GuiTry extends JFrame{
 		JTextField subjects_t[] = new JTextField[subjects_l.length];
 			subjects_t[0] = new JTextField();
 
-		JButton submit_btn = new JButton("subjectsISTER");
+		JButton submit_btn = new JButton("New Subject");
 		//submit_btn.setBounds(10,10,250,100);
 		//submit_btn.setFont(new Font("Arial", Font.PLAIN, 10));
 			submit_btn.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent e) {
-		            System.out.println(subjects_t[0].getText()+"--"+subjects_t[1].getText()+"--"+subjects_t[0].getText()+"--"+subjects_t[1].getText());
+		            System.out.println(subjects_t[0].getText());
+		            try{
+						updateQuery("INSERT INTO subjects(subject_desc) VALUES('"+subjects_t[0].getText()+"')");  
+						subjects_t[0].setText("");
+					}catch(Exception es){
+							System.out.println(es);
+					}
 		         }          
 		      });
 
-		JPanel subjects_data = new JPanel(new GridLayout(subjects_l.length,subjects_l.length));
-			subjects_data.add(subjects_l[0]);
-			subjects_data.add(subjects_t[0]);	
-		
-		JPanel subjects = new JPanel(new GridLayout(2,1));
-			subjects.add(subjects_data);
+		JPanel subjects = new JPanel();
+			int x = 100, y = 100, w = 150, h = 40;
+			subjects_l[0].setBounds(x,y,w,h); subjects_t[0].setBounds(x*2+50,y,w,h);
+			submit_btn.setBounds(x,y+70,w,h);	
+			subjects.add(subjects_l[0]);
+			subjects.add(subjects_t[0]);	
 			subjects.add(submit_btn);
-			subjects.setLocation(150,150);
-			subjects.setSize(400,100);
-			subjects.setVisible(true);
+			subjects.setLayout(null);
 
 		return subjects;
 	}
@@ -371,27 +344,22 @@ class GuiTry extends JFrame{
 		         public void actionPerformed(ActionEvent e) {
 		            System.out.println(reg_t[0].getText()+"--"+reg_t[1].getText()+"--"+reg_t[0].getText()+"--"+reg_t[1].getText());
 		         }          
-		      });
-
-		JPanel reg_data = new JPanel(new GridLayout(reg_l.length,reg_l.length));
-			reg_data.add(reg_l[0]);
-			reg_data.add(reg_t[0]);
-
-			reg_data.add(reg_l[1]);
-			reg_data.add(reg_t[1]);
-			
-			reg_data.add(reg_l[2]);
-			reg_data.add(reg_t[2]);
-			
-			reg_data.add(reg_l[3]);
-			reg_data.add(reg_t[3]);
+		      });		
 		
-		JPanel reg = new JPanel(new GridLayout(2,1));
-			reg.add(reg_data);
+		JPanel reg = new JPanel();
+			reg_l[0].setBounds(150,100,70,30); reg_t[0].setBounds(250,100,120,30);
+			reg_l[1].setBounds(150,170,70,30); reg_t[1].setBounds(250,170,120,30);
+			reg_l[2].setBounds(150,240,70,30); reg_t[2].setBounds(250,240,120,30);
+			reg_l[3].setBounds(150,310,70,30); reg_t[3].setBounds(250,310,120,30);
+			submit_btn.setBounds(150,380,100,30);
+			
+			reg.add(reg_l[0]);reg.add(reg_t[0]);
+			reg.add(reg_l[1]);reg.add(reg_t[1]);
+			reg.add(reg_l[2]);reg.add(reg_t[2]);
+			reg.add(reg_l[3]);reg.add(reg_t[3]);
 			reg.add(submit_btn);
-			reg.setLocation(150,150);
-			reg.setSize(400,100);
-			reg.setVisible(true);
+
+			reg.setLayout(null);
 
 		return reg;
 	}
@@ -439,19 +407,22 @@ class GuiTry extends JFrame{
 	         }          
 	      });
 
-		JPanel login_data = new JPanel(new GridLayout(2,2));
-			login_data.add(login_l[0]);
-			login_data.add(login_t[0]);
-			login_data.add(login_l[1]);
-			login_data.add(login_t[1]);
 		
-		JPanel login = new JPanel(new GridLayout(3,1));
+		JPanel login = new JPanel();
+			
+			login_l[2].setBounds(150,200,200,200); 
+			login_l[0].setBounds(100,100,70,30); login_t[0].setBounds(220,100,120,30);
+			login_l[1].setBounds(100,170,70,30); login_t[1].setBounds(220,170,120,30);
+			submit_btn.setBounds(100,240,70,30);
+
 			login.add(login_l[2]);
-			login.add(login_data);
+			login.add(login_l[0]);login.add(login_t[0]);
+			login.add(login_l[1]);login.add(login_t[1]);
 			login.add(submit_btn);
-			login.setLocation(150,150);
-			login.setSize(300,100);
-			login.setVisible(true);
+			
+
+
+			login.setLayout(null);
 
 		return login;
 	}
@@ -459,132 +430,113 @@ class GuiTry extends JFrame{
 	GuiTry(JPanel x)
 	{
 		
-		Container c = this.getContentPane();
-
-		c.setLayout(null);
-		c.add(x);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(500,500);
-		setVisible(true);
-	   
+		content.getContentPane().add(x);
+		content.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		content.setSize(500,500);
+		content.setVisible(true);
 	}
 
-
-
-	// public String void(int number_of_choices, )
-	// {
-
-	// }
-	
-	public static String Encryptioner(String s)
+	public static JPanel front()
 	{
-	    String pat = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^&*()<>{}|:/+_-";
-	    String key = "+_-tklpqrsmn8%^o4567&*yEF(uvwxGH390IYZ12@#DJK$zABCLMXOPNTUVWQR/[]S{}|:)<cde>fghijab";
-	    String es = " ";
-		    if(s.charAt(0) == '!')
-		    {
-
-		      for (int input=0;input < s.length() ; input++ )
-		      {
-		          for (int pattern= 0 ;pattern < pat.length() ;pattern++ )
-		          {
-		              if(s.charAt(input) == pat.charAt(pattern))
-		              {
-		                  es += key.charAt(pattern);
-		              }
-		          }
-		      }
-		      return es;
-
-		    }else{
-
-		        for (int input=0;input < s.length() ; input++ )
-		        {
-		            for (int pattern= 0 ;pattern < key.length() ;pattern++ )
-		            {
-		                if(s.charAt(input) == key.charAt(pattern))
-		                {
-		                    es += pat.charAt(pattern);
-		                }
-		            }
-		        }
-		        return es;
-
-		      }
-		}
-
-		// public static JPanel Admin()
-		// {
-		// 	JLabel admin_l[] = new JLabel[2];
-		// 	admin_l[0] = new JLabel("Username :");
-		// 	admin_l[1] = new JLabel("Password :");
-
-		// 	JTextField admin_t[] = new JTextField[2];
-		// 		admin_t[0] = new JTextField();
-		// 		admin_t[1] = new JTextField();
-
-		// 	JButton submit_btn = new JButton("admin");
-		// 	submit_btn.addActionListener(new ActionListener() {
-		//          public void actionPerformed(ActionEvent e) {
-		//             System.out.println(admin_t[0].getText()+"--"+admin_t[1].getText());
-		//          }          
-		//       });
-
-		// 	JPanel admin_data = new JPanel(new GridLayout(2,2));
-		// 		admin_data.add(admin_l[0]);
-		// 		admin_data.add(admin_t[0]);
-		// 		admin_data.add(admin_l[1]);
-		// 		admin_data.add(admin_t[1]);
-			
-		// 	JPanel admin = new JPanel(new GridLayout(2,1));
-		// 		admin.add(admin_data);
-		// 		admin.add(submit_btn);
-		// 		admin.setLocation(150,150);
-		// 		admin.setSize(300,100);
-		// 		admin.setVisible(true);
-
-		// 	return admin;
-		// }
-		public static JPanel front()
-		{
-			JLabel front_l = new JLabel("Welcome to DarkJava");
-			JButton login_btn = new JButton("Login");
-			login_btn.addActionListener(new ActionListener() {
+		JFrame collections[] = new JFrame[2];
+			collections[0] = new JFrame("Login");
+			collections[0].getContentPane().add(login_form());
+			collections[0].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			collections[0].setSize(500,500);
+			collections[0].setVisible(false);
+			collections[1] = new JFrame("Registration");
+			collections[1].getContentPane().add(registration_form());
+			collections[1].setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			collections[1].setSize(500,500);
+			collections[1].setVisible(false);
+		JLabel front_l = new JLabel("Welcome to DarkJava");
+		JButton login_btn = new JButton("Login");
+		login_btn.addActionListener(new ActionListener() {
 		         public void actionPerformed(ActionEvent e) {
 		            System.out.println(login_btn.getText());
-		            new GuiTry(login_form());
-		         }          
-		      });
-			JButton register_btn = new JButton("Register");
-			register_btn.addActionListener(new ActionListener() {
-		         public void actionPerformed(ActionEvent e) {
-		            System.out.println(register_btn.getText());
-		            new GuiTry(registration_form());
-		         }          
-		      });
-			JPanel choice_data = new JPanel(new GridLayout(1,2));
-				choice_data.add(login_btn);
-				choice_data.add(register_btn);
-			
-			JPanel login = new JPanel(new GridLayout(2,1));
-				login.add(front_l);
-				login.add(choice_data);
-				login.setLocation(150,150);
-				login.setSize(300,100);
-				login.setVisible(true);
+		            collections[0].setVisible(true); collections[1].setVisible(false);
+		            content.setVisible(false);
+		         }       
+			});
 
-			return login;
-		}
-		public static void main(String[] args)
-		{	
+		JButton register_btn = new JButton("Register");
+		register_btn.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {
+	            System.out.println(register_btn.getText());
+	           collections[1].setVisible(true); collections[0].setVisible(false); 
+	           content.setVisible(false);
+	         }          
+	       });
+		
+		JPanel login = new JPanel();
+			
+			front_l.setBounds(180,50,200,50);
+			login_btn.setBounds(100,250,100,30);
+			register_btn.setBounds(300,250,100,30);
+
+
+			login.add(front_l);
+			login.add(login_btn);
+			login.add(register_btn);
+			
+			login.setLayout(null);
+		
+		return login;
+	}
+
+	public static JPanel admin_dashboard()
+	{
+		JTabbedPane controls = new JTabbedPane();
+		controls.addTab("Subjects",null,subjects_form(),"Lessons");
+		controls.addTab("Lessons",null,lessons_form(),"Lessons");
+		controls.addTab("Questions",null,questions_form(),"Questions");
+		controls.addTab("Answer",null,answers_form(),"Answer");
+		JPanel panel  = new JPanel ();
+		panel.add(controls);
+		panel.setLayout(new GridLayout(1,1));
+		return panel;
+	}
+
+	// show specific frame using frame id
+	// public static void ShowHide(int frame_id)
+	// {
+	// 	for (int x= 0;x < number_of_frames ; x++ ) {
+	// 		if(x == frame_id)
+	// 		{
+	// 			framep[x].setVisible(true);
+	// 		}else{
+	// 			framep[x].setVisible(false);
+	// 		}
+	// 	}
+		
+	// }
+	public static void main(String[] args) 
+	{	
 			 //   Scanner sc = new Scanner(System.in);
     // 		 	String subject = sc.next();
-			new GuiTry(front());
+			// new GuiTry(front());
 				// System.out.println(subject);
-			//new GuiTry(answers_form());
-		//	new GuiTry(questions_form());
-			//new GuiTry(lessons_form());
-			//new GuiTry(login_form());
-			//new GuiTry(registration_form());
+		Vector x = new Vector();
+		x.addElement("asd");		
+		x.addElement("asd");
+		x.addElement("asd");
+		for (int y=0;y < x.size() ; y++) {
+			System.out.println(x.elementAt(y));	
 		}
-	}
+
+		for (int xx=0;xx > x.size() ; xx++) {
+			x.remove(xx);
+		}
+
+		System.out.println(x.size());
+		
+		for (int v=0;v < x.size() ; v++) {
+			System.out.println(x.elementAt(v));	
+		}//	new GuiTry(admin_dashboard());
+			// new GuiTry(answers_form());
+			// new GuiTry(questions_form());
+			// new GuiTry(lessons_form());
+			// new GuiTry(login_form());
+			// new GuiTry(registration_form());
+		}
+}
