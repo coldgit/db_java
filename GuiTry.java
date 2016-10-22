@@ -20,9 +20,10 @@ class GuiTry extends JFrame{
 					   lessonV = new Vector(),
 					 studentsV = new Vector(),
 					  teacherV = new Vector(),
-					  sectionV = new Vector();
+					  sectionV = new Vector(),
+				   credentials = new Vector();
 		
-	public static Statement Connection()
+	public static Statement Connection() throws Exception
 	{
 		Statement stm = null;
 		try{
@@ -35,8 +36,8 @@ class GuiTry extends JFrame{
 		return stm;
 	}
 
-	public static String updateQuery(String sql)
-	{
+	public static String updateQuery(String sql)  throws Exception
+	{ 
 		try{
 			Statement stmt = Connection();
 			stmt.executeUpdate(sql);
@@ -49,8 +50,9 @@ class GuiTry extends JFrame{
 		return "Successfully";
 	}
 
-	public static ResultSet Query(String sql)
+	public static ResultSet Query(String sql)  throws Exception
 	{
+		Vector output = new Vector();
 		ResultSet rs = null;
 		try{
 			Statement stmt = Connection();
@@ -63,8 +65,22 @@ class GuiTry extends JFrame{
 
 		return rs;
 	}
-
-	public static Vector setComboBoxV(String sql,String field,Vector var)
+	public static String SingleQuery(String sql,String field)  throws Exception
+	{
+		String output = "";
+		try{
+					ResultSet x = Query(sql);
+					while(x.next())
+					{
+						output = x.getString(field);
+					}
+			}catch(Exception el)
+			{
+						System.out.println(el);
+			}
+		return output;
+	}
+	public static Vector setComboBoxV(String sql,String field,Vector var)  throws Exception
 	{
 		var.clear();
 		try{
@@ -91,33 +107,33 @@ class GuiTry extends JFrame{
 	// 	JTextField answer_t = new JTextField();
 
 	// 	JButton submit_btn = new JButton("Add Choices");
-	// 		submit_btn.addActionListener(new ActionListener() {
-	// 	         public void actionPerformed(ActionEvent e) {
-	// 	         String q = " ";
-	// 	         	if (quest.getSelectedIndex() != -1) {                     
-	// 	               q = (String)quest.getItemAt
-	// 	                    (quest.getSelectedIndex());             
-	// 	            }        
-	//             try{
-	// 				String sql = "SELECT quest_id FROM questions WHERE quest_desc = '"+q+"'";
-	// 				ResultSet x = Query(sql);
-	// 				while(x.next())
-	// 				{
-	// 					q = x.getString("quest_id");
-	// 				}
-	// 			}catch(Exception el)
-	// 				{
-	// 					System.out.println(el);
-	// 				}
-	// 	         try{
-	// 				updateQuery("INSERT INTO choices(q_id,`desc`) VALUES("+q+",'"+answer_t.getText()+"')");
-	// 				answer_t.setText("");
-	// 				}catch(Exception el)
-	// 					{
-	// 						System.out.println(el);
-	// 					}   
-	// 			}   
-	// 	      });
+			// submit_btn.addActionListener(new ActionListener() {
+		 //         public void actionPerformed(ActionEvent e) {
+		 //         String q = " ";
+		 //         	if (quest.getSelectedIndex() != -1) {                     
+		 //               q = (String)quest.getItemAt
+		 //                    (quest.getSelectedIndex());             
+		 //            }        
+	  //           try{
+			// 		String sql = "SELECT quest_id FROM questions WHERE quest_desc = '"+q+"'";
+			// 		ResultSet x = Query(sql);
+			// 		while(x.next())
+			// 		{
+			// 			q = x.getString("quest_id");
+			// 		}
+			// 	}catch(Exception el)
+			// 		{
+			// 			System.out.println(el);
+			// 		}
+		 //         try{
+			// 		updateQuery("INSERT INTO choices(q_id,`desc`) VALUES("+q+",'"+answer_t.getText()+"')");
+			// 		answer_t.setText("");
+			// 		}catch(Exception el)
+			// 			{
+			// 				System.out.println(el);
+			// 			}   
+			// 	}   
+		 //      });
 
 			
 	// 	JPanel answer = new JPanel(new GridLayout(2,1));
@@ -448,7 +464,7 @@ class GuiTry extends JFrame{
 		         public void actionPerformed(ActionEvent e) {
 		         	try{
 		         		updateQuery("INSERT INTO subjects(subject_des) VALUES('"+subject_t.getText()+"')");
-		         		section_t.setText("");
+		         		subject_t.setText("");
 		         	}catch(Exception er){
 		         		System.out.println(er);
 		         	}
@@ -534,12 +550,18 @@ class GuiTry extends JFrame{
 	         public void actionPerformed(ActionEvent e) {
 	             try{
 
-					String sql = "SELECT COUNT(users.username) AS result_num,username,`password`,name,user_type FROM users WHERE username = '"+login_t[0].getText()+"' AND password = '"+login_t[1].getText()+"'";
+					String sql = "SELECT COUNT(users.username) AS result_num,user_id,username,`password`,name,user_type FROM users WHERE username = '"+login_t[0].getText()+"' AND password = '"+login_t[1].getText()+"'";
 					ResultSet x = Query(sql);
 					while(x.next())
 						{
 							if(x.getInt(1) != 0)
 							{
+									credentials.add(x.getString("user_id"));
+									credentials.add(x.getString("username"));
+									credentials.add(x.getString("password"));
+									credentials.add(x.getString("user_type"));
+									credentials.add(x.getString("name"));
+
 									login_l[2].setText("Welcome to DarkJAva!");
 									switch(x.getString("user_type"))
 									{
@@ -552,8 +574,9 @@ class GuiTry extends JFrame{
 										break;
 										case "Teacher":
 										content.setVisible(false);
-										teacher_frame.getContentPane().add(teacher_dashboard());
+										teacher_frame.getContentPane().add(teacher_dashboard(credentials));
 										teacher_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+										teacher_frame.setTitle(credentials.get(1));
 										teacher_frame.setSize(500,500);
 										teacher_frame.setVisible(true);
 										break;
@@ -629,13 +652,13 @@ class GuiTry extends JFrame{
 		return panel;
 	}
 
-	public static JPanel teacher_dashboard()
+	public static JPanel teacher_dashboard(Vector credit)
 	{
 		// JTabbedPane tab = new JTabbedPane();
-		// tab.addTab("Cover",null,cover(),"Cover!");
-		// tab.addTab("Lessons",null,lessons_form(),"Lessons");
-		// tab.addTab("Questions",null,questions_form(),"Questions");
-		// tab.addTab("Answers",null,answers_form(),"Answers");
+		// tab.addTab("Cover",null,cover(credit),"Cover!");
+		// tab.addTab("Lessons",null,lessons_form(credit),"Lessons");
+		// tab.addTab("Questions",null,questions_form(credit),"Questions");
+		// tab.addTab("Answers",null,answers_form(credit),"Answers");
 		// tab.addChangeListener(new ChangeListener() {
 		//       public void stateChanged(ChangeEvent changeEvent) {
 		//         JTabbedPane tab = (JTabbedPane) changeEvent.getSource();
@@ -664,7 +687,7 @@ class GuiTry extends JFrame{
 		panel.setLayout(new GridLayout(1,1));
 		return panel;
 	}
-	public static JPanel cover()
+	public static JPanel cover(Vector credit)
 	{
 		JLabel picLabel = new JLabel("");
 		ImageIcon image = new ImageIcon("DarkJava.jpg");

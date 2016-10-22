@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 20, 2016 at 03:36 AM
--- Server version: 10.1.13-MariaDB
--- PHP Version: 5.6.23
+-- Generation Time: Oct 22, 2016 at 10:55 PM
+-- Server version: 10.1.16-MariaDB
+-- PHP Version: 5.6.24
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,6 +23,19 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `assign_teacher_subject__section`
+--
+
+CREATE TABLE `assign_teacher_subject__section` (
+  `assign_id` int(11) NOT NULL,
+  `t_id` int(11) DEFAULT NULL,
+  `sub_id` int(11) DEFAULT NULL,
+  `sec_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `choices`
 --
 
@@ -35,12 +48,25 @@ CREATE TABLE `choices` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `enroll_student_section_subject`
+--
+
+CREATE TABLE `enroll_student_section_subject` (
+  `enroll_id` int(11) NOT NULL,
+  `stundent_id` int(11) DEFAULT NULL,
+  `sec_id` int(11) DEFAULT NULL,
+  `sub_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `lessons`
 --
 
 CREATE TABLE `lessons` (
+  `sub_id` int(100) NOT NULL,
   `lesson_id` int(11) NOT NULL,
-  `subject_id` int(100) NOT NULL,
   `title` varchar(50) NOT NULL,
   `content_` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -49,17 +75,17 @@ CREATE TABLE `lessons` (
 -- Dumping data for table `lessons`
 --
 
-INSERT INTO `lessons` (`lesson_id`, `subject_id`, `title`, `content_`) VALUES
-(11, 1, 'Stars and Galaxies', 'The Constellations seem to move because Earth rotates on its axis and revolves around the sum.'),
-(12, 1, 'The Solar System', 'Our system formed about 4.6 billion years ago from a cloud of gas, ice, and dust.'),
-(13, 1, 'Earth-Moon System', 'Earth rotates once a day and revolves about the sun in a little more than 365 days.'),
-(14, 1, 'Exploring-Space', 'The arrangement of electromagnetic waves according to their wavelengths is the electromagnetic spectrum. '),
-(15, 1, 'You, Air and Water', 'Recycling and conservation of Earth`s resources reduce pollution.'),
-(16, 1, 'You and the Environment', 'Recycling, Reducing and Reusing materials are important ways we can conserve natural resources.'),
-(17, 1, 'Energy', 'Releasing radioactive materials into the environment is a potential danger of nuclear energy.'),
-(18, 1, 'Geologic Time', 'During the Paleozoic Era, glaciers advanced, and seas withdrew from continents.Many marine invertebrates became extinct.'),
-(19, 1, 'Clues to Earth`s', 'In nearly all situations a rock layer can be no older or younger than the age of the fossils embedded in it.'),
-(20, 1, 'Volcanoes', 'A caldera forms when the top of a volcano collapses, forming a very large depression.');
+INSERT INTO `lessons` (`sub_id`, `lesson_id`, `title`, `content_`) VALUES
+(1, 11, 'Stars and Galaxies', 'The Constellations seem to move because Earth rotates on its axis and revolves around the sum.'),
+(1, 12, 'The Solar System', 'Our system formed about 4.6 billion years ago from a cloud of gas, ice, and dust.'),
+(1, 13, 'Earth-Moon System', 'Earth rotates once a day and revolves about the sun in a little more than 365 days.'),
+(1, 14, 'Exploring-Space', 'The arrangement of electromagnetic waves according to their wavelengths is the electromagnetic spectrum. '),
+(1, 15, 'You, Air and Water', 'Recycling and conservation of Earth`s resources reduce pollution.'),
+(1, 16, 'You and the Environment', 'Recycling, Reducing and Reusing materials are important ways we can conserve natural resources.'),
+(1, 17, 'Energy', 'Releasing radioactive materials into the environment is a potential danger of nuclear energy.'),
+(1, 18, 'Geologic Time', 'During the Paleozoic Era, glaciers advanced, and seas withdrew from continents.Many marine invertebrates became extinct.'),
+(1, 19, 'Clues to Earth`s', 'In nearly all situations a rock layer can be no older or younger than the age of the fossils embedded in it.'),
+(1, 20, 'Volcanoes', 'A caldera forms when the top of a volcano collapses, forming a very large depression.');
 
 -- --------------------------------------------------------
 
@@ -73,6 +99,17 @@ CREATE TABLE `questions` (
   `quest_desc` varchar(255) NOT NULL,
   `answer_key` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `section`
+--
+
+CREATE TABLE `section` (
+  `sec_id` int(11) NOT NULL,
+  `section_description` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -108,8 +145,25 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `user_type`) VALUES
+(1, 'admin123', 'admin123', 'admin123', 'Admin'),
+(2, 'Dexter123', 'Dexter123', 'Dexter123', 'Student');
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `assign_teacher_subject__section`
+--
+ALTER TABLE `assign_teacher_subject__section`
+  ADD PRIMARY KEY (`assign_id`),
+  ADD KEY `t_id` (`t_id`),
+  ADD KEY `sub_id` (`sub_id`),
+  ADD KEY `sec_id` (`sec_id`);
 
 --
 -- Indexes for table `choices`
@@ -119,11 +173,20 @@ ALTER TABLE `choices`
   ADD KEY `q_id` (`q_id`);
 
 --
+-- Indexes for table `enroll_student_section_subject`
+--
+ALTER TABLE `enroll_student_section_subject`
+  ADD PRIMARY KEY (`enroll_id`),
+  ADD KEY `stundent_id` (`stundent_id`),
+  ADD KEY `sub_id` (`sub_id`),
+  ADD KEY `sec_id` (`sec_id`);
+
+--
 -- Indexes for table `lessons`
 --
 ALTER TABLE `lessons`
   ADD PRIMARY KEY (`lesson_id`),
-  ADD KEY `subject_id` (`subject_id`);
+  ADD KEY `subject_id` (`sub_id`);
 
 --
 -- Indexes for table `questions`
@@ -131,6 +194,12 @@ ALTER TABLE `lessons`
 ALTER TABLE `questions`
   ADD PRIMARY KEY (`quest_id`),
   ADD KEY `lesson_id` (`lesson_id`);
+
+--
+-- Indexes for table `section`
+--
+ALTER TABLE `section`
+  ADD PRIMARY KEY (`sec_id`);
 
 --
 -- Indexes for table `subjects`
@@ -142,18 +211,27 @@ ALTER TABLE `subjects`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD KEY `user_type_id` (`user_type`);
+  ADD PRIMARY KEY (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `assign_teacher_subject__section`
+--
+ALTER TABLE `assign_teacher_subject__section`
+  MODIFY `assign_id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `choices`
 --
 ALTER TABLE `choices`
   MODIFY `choice_id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `enroll_student_section_subject`
+--
+ALTER TABLE `enroll_student_section_subject`
+  MODIFY `enroll_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `lessons`
 --
@@ -165,6 +243,11 @@ ALTER TABLE `lessons`
 ALTER TABLE `questions`
   MODIFY `quest_id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `section`
+--
+ALTER TABLE `section`
+  MODIFY `sec_id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
@@ -173,10 +256,18 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `assign_teacher_subject__section`
+--
+ALTER TABLE `assign_teacher_subject__section`
+  ADD CONSTRAINT `assign_teacher_subject__section_ibfk_1` FOREIGN KEY (`t_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `assign_teacher_subject__section_ibfk_2` FOREIGN KEY (`sub_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `assign_teacher_subject__section_ibfk_3` FOREIGN KEY (`sec_id`) REFERENCES `section` (`sec_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `choices`
@@ -185,10 +276,18 @@ ALTER TABLE `choices`
   ADD CONSTRAINT `choices_ibfk_1` FOREIGN KEY (`q_id`) REFERENCES `questions` (`quest_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `enroll_student_section_subject`
+--
+ALTER TABLE `enroll_student_section_subject`
+  ADD CONSTRAINT `enroll_student_section_subject_ibfk_1` FOREIGN KEY (`stundent_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `enroll_student_section_subject_ibfk_2` FOREIGN KEY (`sub_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `enroll_student_section_subject_ibfk_3` FOREIGN KEY (`sec_id`) REFERENCES `section` (`sec_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `lessons`
 --
 ALTER TABLE `lessons`
-  ADD CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `lessons_ibfk_1` FOREIGN KEY (`sub_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `questions`
