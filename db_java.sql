@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 22, 2016 at 10:55 PM
+-- Generation Time: Oct 23, 2016 at 10:39 PM
 -- Server version: 10.1.16-MariaDB
 -- PHP Version: 5.6.24
 
@@ -114,6 +114,30 @@ CREATE TABLE `section` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `student_info`
+--
+CREATE TABLE `student_info` (
+`user_type` varchar(50)
+,`username` varchar(255)
+,`password` varchar(255)
+,`name` varchar(255)
+,`sec_id` int(11)
+,`section_description` varchar(255)
+,`subject_id` int(100)
+,`subject_desc` varchar(255)
+,`lesson_id` int(11)
+,`title` varchar(50)
+,`content_` text
+,`quest_id` int(11)
+,`quest_desc` varchar(255)
+,`answer_key` varchar(255)
+,`choice_id` int(10)
+,`desc` varchar(255)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `subjects`
 --
 
@@ -129,6 +153,30 @@ CREATE TABLE `subjects` (
 INSERT INTO `subjects` (`subject_id`, `subject_desc`) VALUES
 (1, 'Topic: Earth Scince'),
 (2, 'asd');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `teacher_info`
+--
+CREATE TABLE `teacher_info` (
+`user_type` varchar(50)
+,`username` varchar(255)
+,`password` varchar(255)
+,`name` varchar(255)
+,`sec_id` int(11)
+,`section_description` varchar(255)
+,`subject_id` int(100)
+,`subject_desc` varchar(255)
+,`lesson_id` int(11)
+,`title` varchar(50)
+,`content_` text
+,`quest_id` int(11)
+,`quest_desc` varchar(255)
+,`answer_key` varchar(255)
+,`choice_id` int(10)
+,`desc` varchar(255)
+);
 
 -- --------------------------------------------------------
 
@@ -151,6 +199,24 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `user_type`) VALUES
 (1, 'admin123', 'admin123', 'admin123', 'Admin'),
 (2, 'Dexter123', 'Dexter123', 'Dexter123', 'Student');
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `student_info`
+--
+DROP TABLE IF EXISTS `student_info`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `student_info`  AS  select `users`.`user_type` AS `user_type`,`users`.`username` AS `username`,`users`.`password` AS `password`,`users`.`name` AS `name`,`section`.`sec_id` AS `sec_id`,`section`.`section_description` AS `section_description`,`subjects`.`subject_id` AS `subject_id`,`subjects`.`subject_desc` AS `subject_desc`,`lessons`.`lesson_id` AS `lesson_id`,`lessons`.`title` AS `title`,`lessons`.`content_` AS `content_`,`questions`.`quest_id` AS `quest_id`,`questions`.`quest_desc` AS `quest_desc`,`questions`.`answer_key` AS `answer_key`,`choices`.`choice_id` AS `choice_id`,`choices`.`desc` AS `desc` from ((((((`users` join `section`) join `subjects`) join `lessons`) join `questions`) join `choices`) join `enroll_student_section_subject`) where ((`enroll_student_section_subject`.`stundent_id` = `users`.`user_id`) and (`enroll_student_section_subject`.`sec_id` = `section`.`sec_id`) and (`enroll_student_section_subject`.`sub_id` = `subjects`.`subject_id`) and (`subjects`.`subject_id` = `lessons`.`sub_id`) and (`lessons`.`lesson_id` = `questions`.`lesson_id`) and (`questions`.`quest_id` = `choices`.`q_id`) and (`users`.`user_type` = 'Student')) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `teacher_info`
+--
+DROP TABLE IF EXISTS `teacher_info`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `teacher_info`  AS  select `users`.`user_type` AS `user_type`,`users`.`username` AS `username`,`users`.`password` AS `password`,`users`.`name` AS `name`,`section`.`sec_id` AS `sec_id`,`section`.`section_description` AS `section_description`,`subjects`.`subject_id` AS `subject_id`,`subjects`.`subject_desc` AS `subject_desc`,`lessons`.`lesson_id` AS `lesson_id`,`lessons`.`title` AS `title`,`lessons`.`content_` AS `content_`,`questions`.`quest_id` AS `quest_id`,`questions`.`quest_desc` AS `quest_desc`,`questions`.`answer_key` AS `answer_key`,`choices`.`choice_id` AS `choice_id`,`choices`.`desc` AS `desc` from ((((((`users` join `section`) join `subjects`) join `lessons`) join `questions`) join `choices`) join `enroll_student_section_subject`) where ((`enroll_student_section_subject`.`stundent_id` = `users`.`user_id`) and (`enroll_student_section_subject`.`sec_id` = `section`.`sec_id`) and (`enroll_student_section_subject`.`sub_id` = `subjects`.`subject_id`) and (`subjects`.`subject_id` = `lessons`.`sub_id`) and (`lessons`.`lesson_id` = `questions`.`lesson_id`) and (`questions`.`quest_id` = `choices`.`q_id`) and (`users`.`user_type` = 'Teacher')) ;
 
 --
 -- Indexes for dumped tables
